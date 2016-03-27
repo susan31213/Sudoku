@@ -105,9 +105,10 @@ void Sudoku::readIn()
 void Sudoku::solve()
 {
 	readIn();
-	if(isCorrect()==true && getNextBlank == -1) {
+	if(isCorrect()==true && getNextBlank(-1) == sudokuSize) {
 		cout << '1' << endl;
 		printSudoku(map);
+		return;
 	}
 	int tmpNum[sudokuSize];	//上次填數位置
 	int tmpidx=0;	//上次填數位置地點
