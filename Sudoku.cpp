@@ -105,6 +105,10 @@ void Sudoku::readIn()
 void Sudoku::solve()
 {
 	readIn();
+	if(isCorrect()==true) {
+		cout << '1' << endl;
+		printSudoku(map);
+	}
 	int tmpNum[sudokuSize];	//上次填數位置
 	int tmpidx=0;	//上次填數位置地點
 	int ansNum=0;	//已知答案組數量
