@@ -105,7 +105,7 @@ void Sudoku::readIn()
 void Sudoku::solve()
 {
 	readIn();
-	if(isCorrect()==true) {
+	if(isCorrect()==true && getNextBlank == -1) {
 		cout << '1' << endl;
 		printSudoku(map);
 	}
