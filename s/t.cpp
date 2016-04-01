@@ -18,10 +18,10 @@ void rotate(int n);
 void flip(int n);
 void transform();
 
-bool checkUnity(int arr[]);
+bool checkUnity(int (&arr)[9]);
 int getNextBlank(int index);
 int map[sudokuSize];
-void printSudoku(int arr[]);
+void printSudoku(int (&arr)[81]);
 void change();
 
 int main()
@@ -41,7 +41,7 @@ int getElement(int index)
 	return map[index];
 }
 
-bool checkUnity(int arr[])
+bool checkUnity(int (&arr)[9])
 {
 	int arr_unity[9]; //counter
 
@@ -94,7 +94,7 @@ bool isCorrect()
 	return true;
 }
 
-void printSudoku(int arr[])
+void printSudoku(int (&arr)[81])
 {
 	int i;
 	char c;
@@ -137,8 +137,10 @@ void solve()
 	int ansNum=0;	//已知答案組數量
 	int cur=getNextBlank(-1);	//目前測試答案所在地點
 	int ans[81];
-
+	bool corr = true;
+	
 	do {
+		corr = true;
 		map[cur]++;	//將第一個空格+1測試
 		if(map[cur] > 9)	//若測試數字超過9則回上一格測試
 		{
@@ -150,20 +152,40 @@ void solve()
 		}
 		else
 		{
-			if(solve_check(cur) == true)	//若測試數字無矛盾
+			int check_arr[9];
+			int loc;
+			int i,j;
+			
+			for(i=0;i<9;i++)	//check row
+				check_arr[i] = map[cur/9*9+i];
+			corr = checkUnity(check_arr);
+			if(corr == false)
+				continue;
+			for(i=0;i<9;++i)	//check colume
+				check_arr[i] = map[i*9+(cur%9)];
+			corr = checkUnity(check_arr);
+			if(corr == false)
+				continue;
+			for(j=0;j<9;++j)	//check cell
 			{
-				tmpNum[tmpidx++] = cur;		//將上次填數位置更新
-				cur = getNextBlank(cur);	//移到下一個空格
-				if(cur == sudokuSize)		//若找空格已經找到最後一格
-				{
-					ansNum++;				//已知答案數+1
-					for(int i=0;i<81;i++)
-						ans[i] = map[i];
-					if(tmpidx<=0)			//若沒有上一格(死路)將cur設成-1(離開do while迴圈)
-						cur = -1;
-					else
-						cur = tmpNum[--tmpidx];	//若有上一格則回上一格並將儲存上次填數位置到上次填數陣列裡
-				}
+				loc = 27*(cur%9/3)+3*(cur%9%3)+9*(j/3)+(j%3);
+				check_arr[j] = map[loc];
+			}
+			corr = checkUnity(check_arr);
+			if(corr == false)
+				continue;
+			
+			tmpNum[tmpidx++] = cur;		//將上次填數位置更新
+			cur = getNextBlank(cur);	//移到下一個空格
+			if(cur == sudokuSize)		//若找空格已經找到最後一格
+			{
+				ansNum++;				//已知答案數+1
+				for(int i=0;i<81;i++)
+					ans[i] = map[i];
+				if(tmpidx<=0)			//若沒有上一格(死路)將cur設成-1(離開do while迴圈)
+					cur = -1;
+				else
+					cur = tmpNum[--tmpidx];	//若有上一格則回上一格並將儲存上次填數位置到上次填數陣列裡
 			}
 		}
 	} while(cur>=0 && cur < sudokuSize && ansNum<2);	//若測試位置合法(不是-1) 且 還沒找完所有空格 且還沒發現第二組答案則繼續
@@ -182,38 +204,29 @@ void solve()
 
 bool solve_check(int cur)
 {
-	bool check_result;
+	bool check_result,corr;
 	int check_arr[9];
 	int loc;
 	int i,j;
 	for(i=0;i<9;i++)	//check row
-	{
-//		for(j=0;j<9;j++)
-			check_arr[i] = map[cur/9*9+i];
-	}
-		check_result = checkUnity(check_arr);
-		if(check_result == false)
-			return false;
-//	}
+		check_arr[i] = map[cur/9*9+i];
+	check_result = checkUnity(check_arr);
+	if(check_result == false)
+		corr = false;
 	for(i=0;i<9;++i)	//check colume
-	{
-//		for(j=0;j<9;j++)
-			check_arr[i] = map[i*9+(cur%9)];
-	}
-		check_result = checkUnity(check_arr);
-		if(check_result == false)
-			return false;
-//	}
+		check_arr[i] = map[i*9+(cur%9)];
+	check_result = checkUnity(check_arr);
+	if(check_result == false)
+		corr = false;
 
-		for(j=0;j<9;++j)	//check cell
-		{
-			loc = 27*(cur%9/3)+3*(cur%9%3)+9*(j/3)+(j%3);
-			check_arr[j] = map[loc];
-		}
-			check_result = checkUnity(check_arr);
-			if(check_result == false)
-				return false;
-	return true;
+	for(j=0;j<9;++j)	//check cell
+	{
+		loc = 27*(cur%9/3)+3*(cur%9%3)+9*(j/3)+(j%3);
+		check_arr[j] = map[loc];
+	}
+	check_result = checkUnity(check_arr);
+	if(check_result == false)
+		corr = false;
 }
 
 int getNextBlank(int index)

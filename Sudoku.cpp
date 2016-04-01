@@ -13,7 +13,7 @@ Sudoku::Sudoku(const int init_map[])
 		map[i] = init_map[i];
 }
 
-void Sudoku::setMap(const int set_map[])
+void Sudoku::setMap(const int (&set_map)[81])
 {
 	for(int i=0;i<sudokuSize;i++)
 		map[i] = set_map[i];
@@ -24,7 +24,7 @@ int Sudoku::getElement(int index)
 	return map[index];
 }
 
-bool Sudoku::checkUnity(int arr[])
+bool Sudoku::checkUnity(int (&arr)[9])
 {
 	int arr_unity[9]; //counter
 
@@ -77,7 +77,7 @@ bool Sudoku::isCorrect()
 	return true;
 }
 
-void Sudoku::printSudoku(int arr[])
+void Sudoku::printSudoku(int (&arr)[81])
 {
 	int i;
 	char c;
