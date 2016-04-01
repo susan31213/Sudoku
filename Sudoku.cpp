@@ -133,7 +133,7 @@ void Sudoku::solve()
 		}
 		else
 		{
-			if(solve_check(cur) == true)	//若測試數字無矛盾
+			if(isCorrect() == true)	//若測試數字無矛盾
 			{
 				tmpNum[tmpidx++] = cur;		//將上次填數位置更新
 				cur = getNextBlank(cur);	//移到下一個空格
@@ -161,35 +161,6 @@ void Sudoku::solve()
 		printSudoku(ans);
 	}
 
-}
-
-bool Sudoku::solve_check(int cur)
-{
-	bool check_result;
-	int check_arr[9];
-	int loc;
-	int i,j;
-	for(i=0;i<9;i++)	//check row
-		check_arr[i] = map[cur/9*9+i];
-	check_result = checkUnity(check_arr);
-	if(check_result == false)
-		return false;
-
-	for(i=0;i<9;++i)	//check colume
-		check_arr[i] = map[i*9+(cur%9)];
-	check_result = checkUnity(check_arr);
-	if(check_result == false)
-		return false;
-
-	for(j=0;j<9;++j)	//check cell
-	{
-		loc = 27*(cur%9/3)+3*(cur%9%3)+9*(j/3)+(j%3);
-		check_arr[j] = map[loc];
-	}
-		check_result = checkUnity(check_arr);
-		if(check_result == false)
-			return false;
-	return true;
 }
 
 int Sudoku::getNextBlank(int index)

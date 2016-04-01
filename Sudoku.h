@@ -12,7 +12,6 @@ public:
 	void giveQuestion();
 	void readIn();
 	void solve();
-	bool solve_check(int cur);
 	void changeNum(int a, int b);
 	void changeRow(int a, int b);
 	void changeCol(int a, int b);
