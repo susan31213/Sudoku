@@ -1,30 +1,47 @@
-#include "Sudoku.h"
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
 using namespace std;
 
-Sudoku::Sudoku()
+void setMap(const int set_map[]);
+int getElement(int index);
+bool isCorrect();
+static const int sudokuSize = 81;
+void giveQuestion();
+void readIn();
+void solve();
+bool solve_check(int cur);
+void changeNum(int a, int b);
+void changeRow(int a, int b);
+void changeCol(int a, int b);
+void rotate(int n);
+void flip(int n);
+void transform();
+
+bool checkUnity(int arr[]);
+int getNextBlank(int index);
+int map[sudokuSize];
+void printSudoku(int arr[]);
+void change();
+
+int main()
 {
-	for(int i=0; i<sudokuSize;i++)
-		map[i]=0;
+	solve();
+	return 0;
 }
 
-Sudoku::Sudoku(const int init_map[])
-{
-	for(int i=0;i<sudokuSize;i++)
-		map[i] = init_map[i];
-}
-
-void Sudoku::setMap(const int set_map[])
+void setMap(const int set_map[])
 {
 	for(int i=0;i<sudokuSize;i++)
 		map[i] = set_map[i];
 }
 
-int Sudoku::getElement(int index)
+int getElement(int index)
 {
 	return map[index];
 }
 
-bool Sudoku::checkUnity(int arr[])
+bool checkUnity(int arr[])
 {
 	int arr_unity[9]; //counter
 
@@ -41,7 +58,7 @@ bool Sudoku::checkUnity(int arr[])
 	return true;
 }
 
-bool Sudoku::isCorrect()
+bool isCorrect()
 {
 	bool check_result;
 	int check_arr[9];
@@ -77,7 +94,7 @@ bool Sudoku::isCorrect()
 	return true;
 }
 
-void Sudoku::printSudoku(int arr[])
+void printSudoku(int arr[])
 {
 	int i;
 	char c;
@@ -88,7 +105,7 @@ void Sudoku::printSudoku(int arr[])
 	}
 }
 
-void Sudoku::giveQuestion()
+void giveQuestion()
 {
 	int arr[81] = {5,0,8,0,0,0,0,0,0,0,6,0,0,0,0,0,0,0,0,1,0,6,0,0,0,2,4,2,8,0,5,0,0,9,0,3,0,0,9,0,0,4,5,7,0,6,0,0,0,0,0,8,0,0,0,0,0,9,0,6,0,0,0,0,0,0,0,4,0,7,3,0,0,0,0,0,1,0,0,0,0};
 	setMap(arr);
@@ -96,18 +113,18 @@ void Sudoku::giveQuestion()
 	printSudoku(map);
 }
 
-void Sudoku::readIn()
+void readIn()
 {
 	int i;
 	for(i=0;i<81;i++)
 		cin >> map[i];
 }
 
-void Sudoku::solve()
+void solve()
 {
 	readIn();
 	if(isCorrect()==false) {
-		cout << '0' <<endl;
+		cout << '0' << endl;
 		return;
 	}
 	else if(isCorrect()==true && getNextBlank(-1) == sudokuSize) {
@@ -163,36 +180,43 @@ void Sudoku::solve()
 
 }
 
-bool Sudoku::solve_check(int cur)
+bool solve_check(int cur)
 {
 	bool check_result;
 	int check_arr[9];
 	int loc;
 	int i,j;
 	for(i=0;i<9;i++)	//check row
-		check_arr[i] = map[cur/9*9+i];
-	check_result = checkUnity(check_arr);
-	if(check_result == false)
-		return false;
-
-	for(i=0;i<9;++i)	//check colume
-		check_arr[i] = map[i*9+(cur%9)];
-	check_result = checkUnity(check_arr);
-	if(check_result == false)
-		return false;
-
-	for(j=0;j<9;++j)	//check cell
 	{
-		loc = 27*(cur%9/3)+3*(cur%9%3)+9*(j/3)+(j%3);
-		check_arr[j] = map[loc];
+//		for(j=0;j<9;j++)
+			check_arr[i] = map[cur/9*9+i];
 	}
 		check_result = checkUnity(check_arr);
 		if(check_result == false)
 			return false;
+//	}
+	for(i=0;i<9;++i)	//check colume
+	{
+//		for(j=0;j<9;j++)
+			check_arr[i] = map[i*9+(cur%9)];
+	}
+		check_result = checkUnity(check_arr);
+		if(check_result == false)
+			return false;
+//	}
+
+		for(j=0;j<9;++j)	//check cell
+		{
+			loc = 27*(cur%9/3)+3*(cur%9%3)+9*(j/3)+(j%3);
+			check_arr[j] = map[loc];
+		}
+			check_result = checkUnity(check_arr);
+			if(check_result == false)
+				return false;
 	return true;
 }
 
-int Sudoku::getNextBlank(int index)
+int getNextBlank(int index)
 {
 	do {
 		index++;
@@ -201,14 +225,14 @@ int Sudoku::getNextBlank(int index)
 	return index;
 }
 
-void Sudoku::transform()
+void transform()
 {
 	readIn();
 	change();
 	printSudoku(map);
 }
 
-void Sudoku::change()
+void change()
 {
 	srand(time(NULL));
 	changeNum(rand()%9+1,rand()%9+1);
@@ -218,7 +242,7 @@ void Sudoku::change()
 	flip(rand()%2);
 }
 
-void Sudoku::changeNum(int a, int b)
+void changeNum(int a, int b)
 {
 	int i;
 	for(i=0;i<81;i++)
@@ -230,7 +254,7 @@ void Sudoku::changeNum(int a, int b)
 	}
 }
 
-void Sudoku::changeRow(int a, int b)
+void changeRow(int a, int b)
 {
 	int tmp[3][9] = {0};	//暫存陣列
 	int i,j;
@@ -245,7 +269,7 @@ void Sudoku::changeRow(int a, int b)
 			map[b*3*9+i*9+j] = tmp[i][j];	//將temp(a)存到大b大列
 }
 
-void Sudoku::changeCol(int a, int b)	//同changeRow 改成換Col
+void changeCol(int a, int b)	//同changeRow 改成換Col
 {
 	int tmp[3][9] = {0};
 	int i,j;
@@ -260,7 +284,7 @@ void Sudoku::changeCol(int a, int b)	//同changeRow 改成換Col
 			map[b*3+i+j*9] = tmp[i][j];
 }
 
-void Sudoku::rotate(int n)
+void rotate(int n)
 {
 	int tmp[81] = {0};
 	int i;
@@ -291,7 +315,7 @@ void Sudoku::rotate(int n)
 		setMap(tmp);
 }
 
-void Sudoku::flip(int n)
+void flip(int n)
 {
 	int tmp[81] = {0};
 	int i,j;
@@ -310,3 +334,4 @@ void Sudoku::flip(int n)
 	
 	setMap(tmp);
 }
+

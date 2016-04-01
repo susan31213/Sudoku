@@ -90,8 +90,9 @@ void Sudoku::printSudoku(int arr[])
 
 void Sudoku::giveQuestion()
 {
-	int arr[81] = {0,4,0,0,8,7,2,0,6,8,0,3,0,6,1,0,0,4,7,0,0,0,0,0,0,0,0,9,0,0,2,4,5,0,1,7,6,0,0,0,0,0,0,0,5,4,5,0,6,7,3,0,0,9,0,0,0,0,0,0,0,0,2,3,0,0,1,9,0,4,0,8,2,0,4,7,5,0,0,6,0};
+	int arr[81] = {5,0,8,0,0,0,0,0,0,0,6,0,0,0,0,0,0,0,0,1,0,6,0,0,0,2,4,2,8,0,5,0,0,9,0,3,0,0,9,0,0,4,5,7,0,6,0,0,0,0,0,8,0,0,0,0,0,9,0,6,0,0,0,0,0,0,0,4,0,7,3,0,0,0,0,0,1,0,0,0,0};
 	setMap(arr);
+	change();
 	printSudoku(map);
 }
 
@@ -105,7 +106,11 @@ void Sudoku::readIn()
 void Sudoku::solve()
 {
 	readIn();
-	if(isCorrect()==true && getNextBlank(-1) == sudokuSize) {
+	if(isCorrect()==false) {
+		cout << '0' << endl;
+		return;
+	}
+	else if(isCorrect()==true && getNextBlank(-1) == sudokuSize) {
 		cout << '1' << endl;
 		printSudoku(map);
 		return;
@@ -128,7 +133,7 @@ void Sudoku::solve()
 		}
 		else
 		{
-			if(solve_check(cur) == true)	//若測試數字無矛盾
+			if(isCorrect() == true)	//若測試數字無矛盾
 			{
 				tmpNum[tmpidx++] = cur;		//將上次填數位置更新
 				cur = getNextBlank(cur);	//移到下一個空格
@@ -137,7 +142,6 @@ void Sudoku::solve()
 					ansNum++;				//已知答案數+1
 					for(int i=0;i<81;i++)
 						ans[i] = map[i];
-					printSudoku(ans);
 					if(tmpidx<=0)			//若沒有上一格(死路)將cur設成-1(離開do while迴圈)
 						cur = -1;
 					else
@@ -165,27 +169,33 @@ bool Sudoku::solve_check(int cur)
 	int check_arr[9];
 	int loc;
 	int i,j;
-	for(i=0;i<9;i++)	//check row
-		check_arr[i] = map[cur/9+i];
-	check_result = checkUnity(check_arr);
-	if(check_result == false)
-		return false;
-	
-	for(i=0;i<9;++i)	//check colume
-		check_arr[i] = map[cur%9+i*9];
-	check_result = checkUnity(check_arr);
-	if(check_result == false)
-		return false;
-		
-	for(i=0;i<9;++i)	//check cell
+	for(i=0;i<81;i+=9)	//check row
 	{
-		loc = 27*(cur/3)+3*(cur%3)+9*(i/3)+(i%3);
-		check_arr[i] = map[loc];
-	}
+		for(j=0;j<9;j++)
+			check_arr[j] = map[j+i];
 		check_result = checkUnity(check_arr);
 		if(check_result == false)
 			return false;
-	
+	}
+	for(i=0;i<9;++i)	//check colume
+	{
+		for(j=0;j<9;j++)
+			check_arr[i] = map[i+j];
+		check_result = checkUnity(check_arr);
+		if(check_result == false)
+			return false;
+	}
+	for(i=0;i<9;++i)	//check cell
+	{
+		for(j=0;j<9;++j)
+		{
+			loc = 27*(i/3)+3*(i%3)+9*(j/3)+(j%3);
+			check_arr[j] = map[loc];
+		}
+			check_result = checkUnity(check_arr);
+			if(check_result == false)
+				return false;
+	}
 	return true;
 }
 
