@@ -105,7 +105,6 @@ void Sudoku::readIn()
 
 void Sudoku::solve()
 {
-	readIn();
 	if(isCorrect()==false) {
 		cout << '0' <<endl;
 		return;
@@ -174,7 +173,6 @@ int Sudoku::getNextBlank(int index)
 
 void Sudoku::transform()
 {
-	readIn();
 	change();
 	printSudoku(map);
 }
