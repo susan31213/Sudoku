@@ -17,7 +17,7 @@ void changeCol(int a, int b);
 void rotate(int n);
 void flip(int n);
 void transform();
-
+int time1=0;
 bool checkUnity(int (&arr)[9]);
 int getNextBlank(int index);
 int map[sudokuSize];
@@ -27,6 +27,7 @@ void change();
 int main()
 {
 	solve();
+	cout << time1 << endl;
 	return 0;
 }
 
@@ -156,16 +157,19 @@ void solve()
 			int loc;
 			int i,j;
 			
+			time1++;
 			for(i=0;i<9;i++)	//check row
 				check_arr[i] = map[cur/9*9+i];
 			corr = checkUnity(check_arr);
 			if(corr == false)
 				continue;
+			
 			for(i=0;i<9;++i)	//check colume
 				check_arr[i] = map[i*9+(cur%9)];
 			corr = checkUnity(check_arr);
 			if(corr == false)
 				continue;
+			
 			for(j=0;j<9;++j)	//check cell
 			{
 				loc = 27*(cur%9/3)+3*(cur%9%3)+9*(j/3)+(j%3);

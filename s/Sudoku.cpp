@@ -5,6 +5,7 @@ Sudoku::Sudoku()
 {
 	for(int i=0; i<sudokuSize;i++)
 		map[i]=0;
+	time1=0;
 }
 
 Sudoku::Sudoku(const int init_map[])
@@ -47,6 +48,7 @@ bool Sudoku::isCorrect()
 	int check_arr[9];
 	int loc;
 	int i,j;
+	time1++;
 	for(i=0;i<81;i+=9)	//check row
 	{
 		for(j=0;j<9;j++)

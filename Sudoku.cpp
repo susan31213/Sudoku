@@ -105,13 +105,24 @@ void Sudoku::readIn()
 
 void Sudoku::solve()
 {
+	int spNum=0;
+	for(int i=0;i<81;i++)
+	{
+		if(map[i]==0)
+			spNum++;
+	}
 	if(isCorrect()==false) {
 		cout << '0' <<endl;
 		return;
 	}
-	else if(isCorrect()==true && getNextBlank(-1) == sudokuSize) {
+	else if(isCorrect()==true && spNum == 0) {
 		cout << '1' << endl;
 		printSudoku(map);
+		return;
+	}
+	else if(81-spNum < 17)
+	{
+		cout << '2' << endl;
 		return;
 	}
 	int tmpNum[sudokuSize];	//上次填數位置
@@ -119,7 +130,6 @@ void Sudoku::solve()
 	int ansNum=0;	//已知答案組數量
 	int cur=getNextBlank(-1);	//目前測試答案所在地點
 	int ans[81];
-
 	do {
 		map[cur]++;	//將第一個空格+1測試
 		if(map[cur] > 9)	//若測試數字超過9則回上一格測試
@@ -132,11 +142,11 @@ void Sudoku::solve()
 		}
 		else
 		{
-			if(isCorrect() == true)	//若測試數字無矛盾
+			if(checkSol(cur) == true)	//若測試數字無矛盾
 			{
 				tmpNum[tmpidx++] = cur;		//將上次填數位置更新
 				cur = getNextBlank(cur);	//移到下一個空格
-				if(cur == sudokuSize)		//若找空格已經找到最後一格
+				if(tmpidx == spNum)		//若已經找到最後一個空格
 				{
 					ansNum++;				//已知答案數+1
 					for(int i=0;i<81;i++)
@@ -159,7 +169,6 @@ void Sudoku::solve()
 		cout << '1' << endl;
 		printSudoku(ans);
 	}
-
 }
 
 int Sudoku::getNextBlank(int index)
@@ -169,6 +178,45 @@ int Sudoku::getNextBlank(int index)
 	} while(index < sudokuSize && map[index] > 0);
 	
 	return index;
+}
+
+bool Sudoku::checkSol(int cur)
+{
+	if(checkRow(cur)==false)
+		return false;
+	if(checkCol(cur)==false)
+		return false;
+	if(checkCell(cur)==false)
+		return false;
+	return true;
+}
+
+bool Sudoku::checkRow(int cur)
+{
+	for(int i=0;i<9;i++)
+		if((map[cur/9*9+i]==map[cur]) && (cur/9*9+i!=cur))
+			return false;
+	return true;
+}
+
+bool Sudoku::checkCol(int cur)
+{
+	for(int i=0;i<9;i++)
+		if((map[i*9+(cur%9)]==map[cur]) && (cur!=i*9+(cur%9)))
+			return false;
+	return true;
+}
+
+bool Sudoku::checkCell(int cur)
+{
+	int loc;
+	for(int i=0;i<9;i++)
+	{
+		loc = 27*(cur/9/3)+3*(cur%9/3)+9*(i/3)+(i%3);
+		if((map[loc]==map[cur]) && (cur!=loc))
+			return false;
+	}
+	return true;
 }
 
 void Sudoku::transform()

@@ -12,6 +12,10 @@ public:
 	void giveQuestion();
 	void readIn();
 	void solve();
+	bool checkSol(int cur);
+	bool checkRow(int cur);
+	bool checkCol(int cur);
+	bool checkCell(int cur);
 	void changeNum(int a, int b);
 	void changeRow(int a, int b);
 	void changeCol(int a, int b);

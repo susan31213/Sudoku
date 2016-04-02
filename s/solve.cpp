@@ -8,5 +8,6 @@ int main()
 {
 	Sudoku s;
 	s.solve();
+	cout << s.time1 << endl;
 	return 0;
 }
