@@ -7,6 +7,7 @@ using namespace std;
 int main()
 {
 	Sudoku s;
+	s.readIn();
 	s.transform();
 	return 0;
 }
